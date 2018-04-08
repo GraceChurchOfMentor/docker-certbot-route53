@@ -1,5 +1,7 @@
 #!/bin/sh
 
+docker pull certbot/dns-route53
+
 docker run -it --rm --name certbot \
     --env AWS_CONFIG_FILE=/etc/aws-config \
     -v "${PWD}/aws-config:/etc/aws-config" \
