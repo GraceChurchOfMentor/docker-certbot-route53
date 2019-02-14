@@ -24,6 +24,8 @@ contain the latest version.
 How do I use it?
 ----------------
 
+Use the *certbot.sh* script to validate new domains.
+
 Assuming you already have a functioning Let's Encrypt implementation, all you
 have to do is run:
 
@@ -41,3 +43,35 @@ Plugins selected: Authenticator dns-route53, Installer None
 Please enter in your domain name(s) (comma and/or space separated)  (Enter 'c'
 to cancel): example.com,*.example.com
 ```
+
+
+What if I have multiple AWS accounts?
+-------------------------------------
+
+So do we! The *certbot.sh* script handles this nicely. Just use the
+*--aws-config-file* and *--config-path* options to specify credentials and a
+place to save them. In our case, we've set up a dot-d directory at  */etc/letsencrypt.d*,
+as follows:
+
+```
+/etc
+ +- /letsencrypt.d
+     +- /arch
+     +- /gcm
+     +- /glbi
+```
+
+To issue new certs for Arch Ministries, we use a command like this:
+
+```
+$ ./certbot.sh --aws-config-file=aws-config.arch --config-path=/etc/letsencrypt.d/arch -d archmin.org -d *.archmin.org
+```
+
+This command sets up a directory for Arch in */etc/letsencrypt.d*, copies the
+local *aws-config.arch* file to */etc/letsencrypt.d/arch/aws-config*, and mounts
+this directory to the docker container's default Lets Encrypt config location.
+
+### Automating Renewals
+
+This setup makes easy work of automating certificate renewals for multiple AWS
+accounts. Check out the *renewal-cron.sh* script in this repo for details.
